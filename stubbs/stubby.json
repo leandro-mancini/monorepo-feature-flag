@@ -1,0 +1,17 @@
+[
+  {
+      "request": {
+          "url": "/flags/features",
+          "method": "post"
+      },
+      "response": {
+          "status": 200,
+          "latency": 200,
+          "headers": {
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Origin": "http://localhost:4200"
+          },
+          "file": "data/features.json"
+      }
+  }
+]

@@ -1,0 +1,208 @@
+{
+  "version": 1,
+  "projects": {
+    "picpay-myapp": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        }
+      },
+      "root": "apps/picpay-myapp",
+      "sourceRoot": "apps/picpay-myapp/src",
+      "prefix": "picpay-myapp",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/apps/picpay-myapp",
+            "index": "apps/picpay-myapp/src/index.html",
+            "main": "apps/picpay-myapp/src/main.ts",
+            "polyfills": "apps/picpay-myapp/src/polyfills.ts",
+            "tsConfig": "apps/picpay-myapp/tsconfig.app.json",
+            "aot": true,
+            "assets": [
+              "apps/picpay-myapp/src/favicon.ico",
+              "apps/picpay-myapp/src/assets"
+            ],
+            "styles": ["apps/picpay-myapp/src/styles.scss"],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/picpay-myapp/src/environments/environment.ts",
+                  "with": "apps/picpay-myapp/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "picpay-myapp:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "picpay-myapp:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "picpay-myapp:build"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "apps/picpay-myapp/tsconfig.app.json",
+              "apps/picpay-myapp/tsconfig.spec.json",
+              "apps/picpay-myapp/tsconfig.editor.json"
+            ],
+            "exclude": ["**/node_modules/**", "!apps/picpay-myapp/**/*"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "apps/picpay-myapp/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "picpay-myapp-e2e": {
+      "root": "apps/picpay-myapp-e2e",
+      "sourceRoot": "apps/picpay-myapp-e2e/src",
+      "projectType": "application",
+      "architect": {
+        "e2e": {
+          "builder": "@nrwl/cypress:cypress",
+          "options": {
+            "cypressConfig": "apps/picpay-myapp-e2e/cypress.json",
+            "tsConfig": "apps/picpay-myapp-e2e/tsconfig.e2e.json",
+            "devServerTarget": "picpay-myapp:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "picpay-myapp:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["apps/picpay-myapp-e2e/tsconfig.e2e.json"],
+            "exclude": ["**/node_modules/**", "!apps/picpay-myapp-e2e/**/*"]
+          }
+        }
+      }
+    },
+    "packages-feature-flag": {
+      "projectType": "library",
+      "root": "libs/packages/feature-flag",
+      "sourceRoot": "libs/packages/feature-flag/src",
+      "prefix": "picpay-myapp",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/packages/feature-flag/tsconfig.lib.json",
+              "libs/packages/feature-flag/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**",
+              "!libs/packages/feature-flag/**/*"
+            ]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/packages/feature-flag/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      },
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        }
+      }
+    }
+  },
+  "cli": {
+    "defaultCollection": "@nrwl/angular",
+    "analytics": false
+  },
+  "schematics": {
+    "@nrwl/workspace": {
+      "library": {
+        "linter": "tslint"
+      }
+    },
+    "@nrwl/cypress": {
+      "cypress-project": {
+        "linter": "tslint"
+      }
+    },
+    "@nrwl/node": {
+      "application": {
+        "linter": "tslint"
+      },
+      "library": {
+        "linter": "tslint"
+      }
+    },
+    "@nrwl/nest": {
+      "application": {
+        "linter": "tslint"
+      },
+      "library": {
+        "linter": "tslint"
+      }
+    },
+    "@nrwl/express": {
+      "application": {
+        "linter": "tslint"
+      },
+      "library": {
+        "linter": "tslint"
+      }
+    },
+    "@nrwl/angular:application": {
+      "unitTestRunner": "jest",
+      "e2eTestRunner": "cypress"
+    },
+    "@nrwl/angular:library": {
+      "unitTestRunner": "jest"
+    }
+  },
+  "defaultProject": "picpay-myapp"
+}

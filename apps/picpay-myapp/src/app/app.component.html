@@ -1,0 +1,30 @@
+<header class="flex">
+  <img
+    alt="Nx logo"
+    width="75"
+    src="https://nx.dev/assets/images/nx-logo-white.svg"
+  />
+  <h1>Welcome to {{ title }}!</h1>
+</header>
+<main>
+  <h2>Feature</h2>
+  <details>
+    <summary>{{(feature | async) | json}}</summary>
+    {{(feature | async) | json}}
+  </details>
+
+
+  <!-- {{(features | async)[0] | json}} -->
+
+  <h2>Features</h2>
+  <details *ngFor="let item of features | async">
+    <summary>{{item.name}}</summary>
+    <pre>
+# Tipo
+{{item.type}}
+
+# Valor
+{{item.value}}
+    </pre>
+  </details>
+</main>
