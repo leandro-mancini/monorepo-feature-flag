@@ -9,16 +9,16 @@
 <main>
   <h2>Feature</h2>
   <details>
-    <summary>{{(feature | async) | json}}</summary>
-    {{(feature | async) | json}}
+    <summary>{{(feature_qrcode_bills | async) | json}}</summary>
   </details>
 
-
-  <!-- {{(features | async)[0] | json}} -->
+  <details>
+    <summary>{{(feature_cpf_in_use_dialog | async) | json}}</summary>
+  </details>
 
   <h2>Features</h2>
   <details *ngFor="let item of features | async">
-    <summary>{{item.name}}</summary>
+    <summary>{{item.name}} - {{item.value}} </summary>
     <pre>
 # Tipo
 {{item.type}}

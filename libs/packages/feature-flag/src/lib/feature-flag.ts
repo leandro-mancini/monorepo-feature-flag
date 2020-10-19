@@ -1,11 +1,12 @@
 import { FFConfig } from './models/feature-flag-config.model';
 import { Feature } from './models/feature.model';
-import { ApiFeatureFlag } from './api-feature-flag';
+import { Observable, Observer, of, timer } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 class FeatureFlagClass {
-  features: Promise<Feature[]>;
-  feature: string[];
+  features: Observable<Feature[]>;
   private config: FFConfig;
+  private features$: Feature[];
 
   /**
    * Initialization
@@ -18,40 +19,7 @@ class FeatureFlagClass {
 
     this.config = config;
 
-    // this.features = this.getFeatures();
-
-
-    const taskResolution = (period) => {
-      return new Promise<Feature[]>((resolve, reject) => {
-        const interval = setInterval(() => {
-          this.getFeatures()
-            .then((data) => {
-              // console.log(data);
-              // if (data === 'failure') {
-              //     clearInterval(interval);
-              //    reject(Error('fail'));
-              //  } else if (data === 'success') {
-              //      resolve('complete')
-              //  }
-               // keep on waiting
-
-              //  this.features = data;
-
-              this.features = new Promise(() => resolve(data));
-
-              resolve(data);
-
-              console.log(data);
-           });
-        }, period);
-      });
-    };
-
-    // taskResolution(3000);
-
-    // this.features = taskResolution(3000);
-
-    // console.log(taskResolution(3000));
+    this.features = this.getFeatures();
   }
 
   /**
@@ -59,19 +27,42 @@ class FeatureFlagClass {
    * @param {String} featureName
    * @return {Feature[]}
    */
-  private async getFeatures(): Promise<Feature[]> {
-    const api = new ApiFeatureFlag(this.config.url);
+  private getFeatures(): Observable<Feature[]> {
+    return new Observable<Feature[]>((observer: Observer<Feature[]>) => {
+      const apiUrl = this.config.url;
 
-    return api.getFeatures();
+      timer(0, 5000).subscribe(() => {
+        fetch(apiUrl, {
+          method: 'post',
+          body: JSON.stringify({}),
+        })
+        .then(this.handleErrors)
+        .then((response: Response) => response.json())
+        .then((response: Feature[]) => {
+          this.features$ = response;
+
+          observer.next(response);
+        })
+        .catch((err) => observer.error(err));
+      });
+    });
   }
 
-  getFeature(featureName: string): Promise<Feature> {
-    return this.features
-    .then((res: Feature[]) => {
-      const feature = res.find((item: Feature) => item.name === featureName);
+  getFeature(featureName: string): Observable<Feature> {
+    return this.getFeatures().pipe(
+      map(items => {
+        const feature = items.find((item: Feature) => item.name === featureName);
+        return feature;
+      })
+    );
+  }
 
-      return feature;
-    })
+  private handleErrors(response: Response) {
+    if (!response.ok) {
+      throw Error(response.statusText);
+    }
+
+    return response;
   }
 }
 
